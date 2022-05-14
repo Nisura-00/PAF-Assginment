@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class Payment 
 { 
-	
+	    //A common method to connect the DB
 		private Connection connect(){ 
 			
 						Connection con = null; 
@@ -18,7 +18,7 @@ public class Payment
 
 							
 							
-							
+							// Provide the correct details: DBServer/DBName, username, password
 							con= DriverManager.getConnection("jdbc:mysql://localhost:3306/powereg","root", ""); 
 						} 
 						catch (Exception e) {
@@ -28,7 +28,7 @@ public class Payment
 						return con; 
 			} 
 		
-		
+		//Insert Payment
 		public String insertPayment(String billID, String cardHolder, String cardNo, String cvv, String amount) {
 			
 					String output = ""; 
@@ -43,13 +43,13 @@ public class Payment
 							
 						} 
 						
-						
+						// create a prepared statement
 						String query = " insert into payment( paymentID, billID, cardHolder, cardNo, cvv, amount)"
 								+ " values( ?, ?, ?, ?, ?,?)";
 						PreparedStatement preparedStmt = con.prepareStatement(query);
 						
 						
-						
+						// binding values
 						preparedStmt.setInt(1, 0);
 						preparedStmt.setString(2, billID);
 						preparedStmt.setString(3, cardHolder);
@@ -58,7 +58,7 @@ public class Payment
 						preparedStmt.setDouble(6, Double.parseDouble(amount));
 						
 						
- 
+                        // execute the statement
 						preparedStmt.execute(); 
 						con.close(); 
 						
@@ -75,7 +75,7 @@ public class Payment
 			} 
 		
 		
-		
+		//Read Payments
 		public String readPayments() 
 		{ 
 			String output = ""; 
@@ -86,7 +86,7 @@ public class Payment
 		 { 
 		 return "Error while connecting to the database for reading."; 
 		 } 
-		 
+		      // Prepare the html table to be displayed
 			output = "<table border='1'><tr><th>Bill ID</th><th>Card Holder's Name</th>" + "<th>Card No</th>"
 					+ "<th>CVV</th>" + "<th>Amount</th>"+"<th>Update</th><th>Remove</th></tr>";
 		
@@ -95,7 +95,7 @@ public class Payment
 			ResultSet rs = stmt.executeQuery(query);
 			
 			
-		
+		     // iterate through the rows in the result set
 			while (rs.next()) {
 				String paymentID = Integer.toString(rs.getInt("paymentID"));
 				String billID = rs.getString("billID");
@@ -135,7 +135,7 @@ public class Payment
 		}
 		
 		
-		
+		//Update Payments
 		public String updatePayment(String paymentID, String billID, String cardHolder, String cardNo, String cvv, String amount)
 
 	    {
@@ -184,7 +184,7 @@ public class Payment
 			return output; 
 	 }
 		
-		
+		//Delete Payments
 		public String deletePayment(String paymentID) {
 			
 			String output = ""; 
@@ -195,10 +195,10 @@ public class Payment
 				if (con == null){
 					return "Error while connecting to the database for deleting."; 
 					} 
-				// create a prepared statement
+				// Create a prepared statement
 				String query = "delete from payment where paymentID=?";
 				PreparedStatement preparedStmt = con.prepareStatement(query);
-				// binding values
+				// Binding values
 				preparedStmt.setInt(1, Integer.parseInt(paymentID)); 
 				// execute the statement
 				preparedStmt.execute(); 
